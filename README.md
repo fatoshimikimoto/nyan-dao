@@ -4,7 +4,7 @@ NyanDao is a meme governance built for a meme token: [ArbiNYAN](https://arbinyan
 # How does it work?
 This governance allows the community to stake their ArbiNYAN (ticker: NYAN) in exchange for voteNYAN (ticker: vNYAN). While NYAN are in the governance staking contract they earn interest **straight back into the DAO.**
 
-**Note**: by joining the DAO, contributors donate _all of the interest_ earned on their NYAN to the DAO. However, their _principal_ is always redeemable, because 1 vNYAN == 1 NYAN. This is a DAO built on selfless contribution. It has no fees. Contributors may always leave the DAO, retrieving their original NYAN tokens in exchange for burning their vNYAN tokens. vNYAN tokens have no value. They are simply a wrapper on top of the NYAN token that allows for governance voting.
+**Note**: by joining the DAO, contributors donate _the interest_ earned on their deposited NYAN to the DAO. However, their _principal_ is always redeemable, because 1 vNYAN == 1 NYAN. This is a DAO built on selfless contribution. It has no fees. Contributors may always leave the DAO, retrieving their original NYAN tokens in exchange for burning their vNYAN tokens. vNYAN tokens have no value. They are simply a wrapper on top of the NYAN token that allows for governance voting.
 
 # Test
 To test the contracts, download the repo, install with yarn, and then use hardhat.

@@ -9,6 +9,7 @@ import "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFractio
 import "@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol";
 
 contract NyanGovernor is Governor, GovernorProposalThreshold, GovernorCountingSimple, GovernorVotes, GovernorVotesQuorumFraction, GovernorTimelockControl {
+
     constructor(ERC20Votes _token, TimelockController _timelock)
         Governor("NyanGovernor")
         GovernorVotes(_token)
@@ -21,7 +22,8 @@ contract NyanGovernor is Governor, GovernorProposalThreshold, GovernorCountingSi
     }
 
     function votingPeriod() public pure override returns (uint256) {
-        return 11520; // 2 day
+        // return 11520; // 2 day
+        return 20; // blocks
     }
 
     function proposalThreshold() public pure override returns (uint256) {

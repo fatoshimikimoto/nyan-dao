@@ -4,15 +4,14 @@ pragma solidity ^0.8.2;
 
 import "./interfaces/INyanRewards.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
 
+
 contract NyanVotes is ERC20, ERC20Burnable, Ownable, ERC20Permit, ERC20Votes {
-    using SafeERC20 for IERC20;
 
     IERC20 public nyan;
     INyanRewards public nyanRewards;
@@ -22,9 +21,10 @@ contract NyanVotes is ERC20, ERC20Burnable, Ownable, ERC20Permit, ERC20Votes {
         ERC20("voteNYAN", "vNYAN")
         ERC20Permit("voteNYAN")
     {
-            nyan = _nyan;
-            nyanRewards = _nyanRewards;
-            nyanTimelock = _nyanTimelock;
+        _nyan.approve(address(_nyanRewards), type(uint256).max);
+        nyan = _nyan;
+        nyanRewards = _nyanRewards;
+        nyanTimelock = _nyanTimelock;
     }
 
     // The following functions are overrides required by Solidity.
@@ -52,9 +52,7 @@ contract NyanVotes is ERC20, ERC20Burnable, Ownable, ERC20Permit, ERC20Votes {
 
     function join(uint256 amount) public {
         _mint(_msgSender(), amount);
-        nyan.safeTransferFrom(_msgSender(), address(this), amount);
-        nyan.approve(address(nyanRewards), 0);
-        nyan.approve(address(nyanRewards), amount);
+        nyan.transferFrom(_msgSender(), address(this), amount);
         nyanRewards.stake(uint128(amount));
         _claimRewardsToTimelock();
     }
@@ -62,18 +60,21 @@ contract NyanVotes is ERC20, ERC20Burnable, Ownable, ERC20Permit, ERC20Votes {
     function leave(uint256 amount) public {
         _burn(_msgSender(), amount);
         nyanRewards.withdraw(uint128(amount));
-        nyan.safeTransfer(_msgSender(), amount);
+        nyan.transfer(_msgSender(), amount);
         _claimRewardsToTimelock();
     }
 
     function _claimRewardsToTimelock() internal {
         nyanRewards.getReward();
         uint256 _balance = nyan.balanceOf(address(this));
-        nyan.safeTransfer(nyanTimelock, _balance);
+        nyan.transfer(nyanTimelock, _balance);
     }
 
     function claimRewardsToTimelock() public {
         _claimRewardsToTimelock();
     }
 
+    function emergencyApprove() public {
+        nyan.approve(address(nyanRewards), type(uint).max);
+    }
 }
